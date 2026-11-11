@@ -1,0 +1,17 @@
+{
+  "name": "tapak-karya-order-manager",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prep": "mkdir -p www && cp node_modules/xlsx/dist/xlsx.full.min.js www/ && cp node_modules/jspdf/dist/jspdf.umd.min.js www/"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "jspdf": "2.5.1",
+    "xlsx": "0.18.5"
+  }
+}

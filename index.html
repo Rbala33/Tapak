@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tapak Karya – Order Manager</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1b;--mu:#6b6a66;--bd:#e2e0da;--ac:#1f4fd8;--act:#fff;--red:#c62828;--amb:#b26a00;--grn:#2e7d32;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--card:#212120;--tx:#efeeea;--mu:#9d9b95;--bd:#363532;--ac:#7ea2ff;--act:#10131c;--red:#ff8a80;--amb:#ffb74d;--grn:#81c784;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--card:#212120;--tx:#efeeea;--mu:#9d9b95;--bd:#363532;--ac:#7ea2ff;--act:#10131c;--red:#ff8a80;--amb:#ffb74d;--grn:#81c784;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding:12px 14px 0;border-bottom:1px solid var(--bd)}
+h1{font-size:18px;margin:0 0 8px}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{flex:1 0 auto;padding:10px 10px;border:0;background:none;color:var(--mu);font:inherit;font-size:13px;font-weight:600;border-bottom:3px solid transparent;cursor:pointer}
+nav button.on{color:var(--ac);border-color:var(--ac)}
+main{padding:14px;max-width:820px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sp{justify-content:space-between}
+.mu{color:var(--mu);font-size:13px}
+.b{font-weight:700}
+.btn{background:var(--ac);color:var(--act);border:0;border-radius:9px;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer}
+.btn.g{background:none;color:var(--ac);border:1px solid var(--bd)}
+.btn.d{background:none;color:var(--red);border:1px solid var(--bd)}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:110px;font-size:13px}
+label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.grid label{margin:0 0 2px;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--bd)}
+.red{color:var(--red)}.amb{color:var(--amb)}.grn{color:var(--grn)}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.kpi div{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px}
+.kpi b{display:block;font-size:17px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+h2{font-size:15px;margin:16px 0 8px}
+.th{float:right;width:64px;height:64px;object-fit:cover;border-radius:8px;margin:0 0 6px 8px}
+.qr{display:block;width:100%;max-width:240px;margin-top:8px;border-radius:10px;background:#fff}
+.av{border-radius:50%;object-fit:cover;background:var(--bd);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--mu);flex:none;vertical-align:middle}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.gal .card{margin:0}
+.pg{padding:10px}
+.pr{display:grid;grid-template-columns:1fr 128px 36px;gap:6px;margin-top:8px}
+.rpw{position:relative}
+.rpw span{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:13px}
+.rpw input{padding-left:32px;text-align:right}
+.x{border:1px solid var(--bd);background:none;color:var(--red);border-radius:8px;cursor:pointer;font-size:14px}
+.pg details{margin:2px 0 4px;font-size:12px}
+.pg summary{cursor:pointer;padding:4px 0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.g3 label{margin:0 0 2px}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+.chip{flex:none;padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:var(--ac);color:var(--act);border-color:var(--ac)}
+.gi{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--bd)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:20;overflow:auto;padding:12px}
+#modal.on{display:block}
+#modal .card{max-width:620px;margin:0 auto}
+</style>
+<script src="xlsx.full.min.js"></script>
+<script src="jspdf.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Tapak Karya · Order Manager</h1>
+  <nav id="nav"></nav>
+</header>
+<main id="app"></main>
+<div id="modal"></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rp = n => n == null || n === '' ? '–' : 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const CLOSED = ['Done', 'Delivered', 'Cancelled'];
+const DEF = {
+  clients: [],
+  products: ['Workshirt','Jersey','Towel','Payung','Tshirt','Knitwear'],
+  materials: ['American Drill','Milano','Microfeel','Waffle','Cotton 24s','Cottonmix','Acrylic'],
+  fits: ['US','Reg','Boxy fit','Custom size','AS'],
+  statuses: ['New','Sample in process','In production','Done','Delivered','Cancelled'],
+  sizes: ['S','M','L','XL','2XL','3XL','4XL','5XL','30x30','30x75'].map(l => ({l, x: 0})),
+  prices: [
+    ['Workshirt','American Drill',120000],['Jersey','Milano',200000],['Jersey','Microfeel',120000],
+    ['Towel','Cottonmix',75000],['Payung','',50000],['Tshirt','Cotton 24s',110000],['Knitwear','Acrylic',135000]
+  ].map(([p,m,v]) => ({p, m, v})),
+  orders: [], year: new Date().getFullYear(), rem: {on: false, days: 3, notified: {}}
+};
+let S = null;
+try { S = JSON.parse(localStorage.getItem('tk_v1')); } catch (e) {}
+if (!S || !S.orders) S = JSON.parse(JSON.stringify(DEF));
+if (!S.rem) S.rem = {on: false, days: 3, notified: {}};
+if (!S.pay) S.pay = [];
+if (!S.cd) S.cd = {};
+if (!S.samples) S.samples = [];
+const uid = () => Math.random().toString(36).slice(2, 10);
+S.orders.forEach(o => { if (!o.id) o.id = uid(); });
+let ph = '';
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const save = () => { try { localStorage.setItem('tk_v1', JSON.stringify(S)); return true; } catch (e) { return false; } };
+let tab = 'orders', q = '', fs = '', qf = '';
+
+function calc(o) {
+  const sq = S.sizes.map(z => +(o.q && o.q[z.l]) || 0);
+  const qty = sq.reduce((a, b) => a + b, 0) + (+o.other || 0);
+  let price = null, bulk = false;
+  if (o.custom !== '' && o.custom != null) price = +o.custom;
+  else {
+    const f = S.prices.find(x => x.p === o.product && x.m === (o.material || '')) || S.prices.find(x => x.p === o.product && !x.m);
+    if (f) { bulk = !!(f.bq && f.bv && qty >= +f.bq); price = bulk ? +f.bv : +f.v; }
+  }
+  const sub = qty && price != null ? qty * price + sq.reduce((a, n, i) => a + n * (+S.sizes[i].x || 0), 0) : null;
+  const dp = Math.min(100, Math.max(0, +o.disc || 0)), disc = sub == null ? 0 : sub * dp / 100;
+  const total = sub == null ? null : sub - disc;
+  const paid = +o.paid || 0;
+  const bal = total == null ? null : total - paid;
+  const pay = !qty ? '' : price == null ? 'No price' : bal <= 0 ? 'Paid' : paid > 0 ? 'DP' : 'Unpaid';
+  return {qty, price, bulk, sub, dp, disc, total, paid, bal, pay};
+}
+function dl(o) {
+  if (!o.deadline || CLOSED.includes(o.status)) return '';
+  const d = Math.round((new Date(o.deadline + 'T00:00:00') - new Date().setHours(0,0,0,0)) / 864e5);
+  return d < 0 ? 'red' : d <= S.rem.days ? 'amb' : '';
+}
+const fd = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}) : '–';
+const opts = (arr, sel, blank) => (blank ? '<option value="">–</option>' : '') + arr.map(a => `<option ${a === sel ? 'selected' : ''}>${esc(a)}</option>`).join('');
+
+function nav() {
+  $('#nav').innerHTML = [['orders','Orders'],['remind','Reminders'],['pay','Payments'],['samples','Samples'],['summary','Summary'],['settings','Settings']]
+    .map(([k, t]) => `<button class="${tab === k ? 'on' : ''}" onclick="go('${k}')">${t}</button>`).join('');
+}
+function go(t) { tab = t; render(); scrollTo(0, 0); }
+
+function render() {
+  nav();
+  $('#app').innerHTML = tab === 'orders' ? vOrders() : tab === 'remind' ? vRemind() : tab === 'pay' ? vPay() : tab === 'samples' ? vSamples() : tab === 'summary' ? vSummary() : vSettings();
+}
+
+function vOrders() {
+  let list = S.orders.map((o, i) => ({o, i, c: calc(o)}));
+  const t = q.toLowerCase();
+  list = list.filter(x => fq(x) && (!fs || x.o.status === fs) && (!t || [x.o.client, x.o.product, x.o.material, x.o.notes].join(' ').toLowerCase().includes(t)));
+  list.sort((a, b) => (a.o.deadline || '9') < (b.o.deadline || '9') ? -1 : 1);
+  return backupNag() + banner() + `<div class="row" style="margin-bottom:10px">
+    <button class="btn" onclick="edit(-1)">+ New order</button>
+    <input style="flex:1;min-width:120px" placeholder="Search client, product…" value="${esc(q)}" oninput="q=this.value;keep()">
+    <select style="width:auto" onchange="fs=this.value;render()">${opts(S.statuses, fs, true).replace('>–<', '>All statuses<')}</select>
+  </div><div class="chips">${[['', 'All'], ['over', 'Overdue'], ['unpaid', 'Unpaid'], ['week', 'Due this week']].map(([k, t]) => `<button class="chip ${qf === k ? 'on' : ''}" onclick="qf='${k}';render()">${t}</button>`).join('')}</div><div id="list">${listHtml(list)}</div>`;
+}
+function keep() { // re-render list only, so the search box keeps focus
+  const t = q.toLowerCase();
+  let list = S.orders.map((o, i) => ({o, i, c: calc(o)})).filter(x => fq(x) && (!fs || x.o.status === fs) && (!t || [x.o.client, x.o.product, x.o.material, x.o.notes].join(' ').toLowerCase().includes(t)));
+  list.sort((a, b) => (a.o.deadline || '9') < (b.o.deadline || '9') ? -1 : 1);
+  $('#list').innerHTML = listHtml(list);
+}
+function listHtml(list) {
+  if (!list.length) return `<div class="card mu">${S.orders.length ? 'No orders match.' : 'No orders yet. Tap “+ New order” to add the first one.'}</div>`;
+  return list.map(({o, i, c}) => {
+    const sz = S.sizes.filter(z => +(o.q && o.q[z.l])).map(z => `${esc(z.l)}×${o.q[z.l]}`).join('  ') + (+o.other ? `  Other×${o.other}` : '');
+    const k = dl(o), pc = c.pay === 'Paid' ? 'grn' : c.pay === 'Unpaid' || c.pay === 'No price' ? 'red' : 'amb';
+    return `<div class="card" onclick="edit(${i})">
+      ${o.photo ? `<img class="th" src="${o.photo}">` : ''}<div class="row sp"><span class="b row" style="gap:8px;flex-wrap:nowrap">${av(o.client, 28)}${esc(o.client || '(no client)')}</span><span class="tag">${esc(o.status || '')}</span></div>
+      <div>${esc(o.product)} ${o.material ? '· ' + esc(o.material) : ''} ${o.fit ? '· ' + esc(o.fit) : ''}</div>
+      <div class="mu">${sz || 'No sizes'} · <b>${c.qty} pcs</b></div>
+      <div class="row sp" style="margin-top:6px"><span>${rp(c.total)}${c.disc ? ` <span class="mu">(−${c.dp}%)</span>` : ''}</span><span class="tag ${pc}">${c.pay || '–'}</span></div>
+      <div class="row sp mu"><span>Paid ${rp(c.paid)} · Balance ${rp(c.bal)}</span><span class="${k}">Due ${fd(o.deadline)}</span></div></div>`;
+  }).join('');
+}
+
+function edit(i) {
+  const o = i < 0 ? {q: {}, status: S.statuses[0], date: today()} : S.orders[i];
+  ph = o.photo || '';
+  pys = (o.pays || (+o.paid ? [{d: o.date, a: +o.paid, m: ''}] : [])).map(p => ({...p}));
+  const F = (id, lab, v, type = 'text') => `<div><label>${lab}</label><input id="${id}" type="${type}" value="${esc(v)}"></div>`;
+  const clientList = `<datalist id="cl">${S.clients.map(c => `<option value="${esc(c)}">`).join('')}</datalist>`;
+  $('#modal').innerHTML = `<div class="card"><div class="row sp"><span class="b">${i < 0 ? 'New order' : 'Edit order'}</span><button class="btn g" onclick="closeM()">Close</button></div>
+    <label>Client / Brand</label><input id="f_client" list="cl" value="${esc(o.client)}">${clientList}
+    <div class="g2"><div><label>Product</label><select id="f_product" onchange="pv()">${opts(S.products, o.product, true)}</select></div>
+    <div><label>Material</label><select id="f_material" onchange="pv()">${opts(S.materials, o.material, true)}</select></div></div>
+    <label>Fit</label><select id="f_fit">${opts(S.fits, o.fit, true)}</select>
+    <label>Product photo</label><div class="row"><img id="phimg" class="th" style="float:none;width:96px;height:96px;margin:0;display:${ph ? 'block' : 'none'}" src="${ph}"><button type="button" class="btn g" onclick="$('#cam').click()">📷 Take photo</button><button type="button" class="btn g" onclick="$('#upl').click()">🖼 Upload</button><button type="button" class="btn d" onclick="ph='';phShow()">Remove</button></div>
+    <input id="cam" type="file" accept="image/*" capture="environment" hidden onchange="pick(this)"><input id="upl" type="file" accept="image/*" hidden onchange="pick(this)">
+    <label>Quantity per size</label><div class="grid">${S.sizes.map((z, n) => `<div><label>${esc(z.l)}</label><input id="q${n}" type="number" min="0" inputmode="numeric" value="${(o.q && o.q[z.l]) || ''}" oninput="pv()"></div>`).join('')}<div><label>Other</label><input id="f_other" type="number" min="0" inputmode="numeric" value="${o.other || ''}" oninput="pv()"></div></div>
+    <div class="card" style="margin:10px 0 0" oninput="pv()"><div class="b">💰 Pricing</div><div class="mu">Leave custom price empty to use the price list. Discount applies to the whole order.</div>
+    <div class="g2">${F('f_custom', 'Custom price / pc', o.custom ?? '', 'number')}${F('f_disc', 'Discount %', o.disc ?? '', 'number')}</div>
+    <label>Payments received</label><div id="pyl">${pyHtml()}</div><button type="button" class="btn g" style="margin-top:6px" onclick="pys.push({d: today(), a: 0, m: ''});pyRe()">+ Add payment</button></div>
+    <div class="card" style="margin:10px 0 0" id="pvbox"></div>
+    <div class="g2">${F('f_date', 'Order date', o.date || '', 'date')}${F('f_deadline', 'Deadline', o.deadline || '', 'date')}</div>
+    ${F('f_follow', 'Follow-up reminder date (optional)', o.follow || '', 'date')}
+    <label>Status</label><select id="f_status">${opts(S.statuses, o.status)}</select>
+    ${F('f_notes', 'Notes / size notes', o.notes || '')}
+    ${i >= 0 ? `<div class="row" style="margin-top:12px"><button class="btn g" onclick="payMsg(0)">💬 Copy payment message</button><button class="btn g" onclick="payMsg(1)">WhatsApp</button><button class="btn g" onclick="invoice(${i})">🧾 Invoice PDF</button></div>` : ''}<div class="row" style="margin-top:12px"><button class="btn" onclick="saveO(${i})">Save</button>${i >= 0 ? `<button class="btn g" onclick="cal(${i},'d')">📅 Deadline</button><button class="btn g" onclick="cal(${i},'f')">📅 Follow-up</button>` : ''}${i >= 0 ? `<button class="btn d" onclick="delO(${i})">Delete</button>` : ''}</div></div>`;
+  $('#modal').classList.add('on');
+  pv();
+}
+function read() {
+  const q = {}; S.sizes.forEach((z, n) => { const v = +$('#q' + n).value; if (v) q[z.l] = v; });
+  const g = id => $('#' + id).value;
+  return {client: g('f_client').trim(), product: g('f_product'), material: g('f_material'), fit: g('f_fit'), q, other: +g('f_other') || 0,
+    custom: g('f_custom'), disc: g('f_disc'), pays: pys.map(p => ({...p})), paid: pys.reduce((a, p) => a + (+p.a || 0), 0), date: g('f_date'), deadline: g('f_deadline'), status: g('f_status'), notes: g('f_notes'), photo: ph, follow: g('f_follow')};
+}
+function pv() {
+  const c = calc(read());
+  $('#pvbox').innerHTML = `<div class="row sp"><span class="mu">Total qty</span><b>${c.qty} pcs</b></div><div class="row sp"><span class="mu">Price / pc</span><b>${rp(c.price)}${c.bulk ? ' <span class="tag grn">Bulk price</span>' : ''}</b></div><div class="row sp"><span class="mu">Subtotal</span><b>${rp(c.sub)}</b></div>${c.disc ? `<div class="row sp"><span class="mu">Discount (${c.dp}%)</span><b class="grn">− ${rp(c.disc)}</b></div>` : ''}<div class="row sp"><span class="mu">Total price</span><b>${rp(c.total)}</b></div><div class="row sp"><span class="mu">Balance due</span><b>${rp(c.bal)} ${c.pay ? '· ' + c.pay : ''}</b></div>`;
+}
+function saveO(i) {
+  const o = read();
+  if (!o.client || !o.product) { alert('Please choose a client and a product.'); return; }
+  if (o.client && !S.clients.includes(o.client)) S.clients.push(o.client);
+  o.id = i < 0 ? uid() : S.orders[i].id || uid();
+  i < 0 ? S.orders.push(o) : (S.orders[i] = o);
+  if (!save()) alert('Storage is full. Remove some photos and save again.');
+  closeM(); render(); notify();
+}
+function delO(i) { if (confirm('Are you sure you want to delete this order?')) { S.orders.splice(i, 1); save(); closeM(); render(); } }
+function closeM() { $('#modal').classList.remove('on'); }
+
+function sumBy(keyFn, keys, all) {
+  const m = {}; keys.forEach(k => m[k] = {n: 0, p: 0, v: 0, pd: 0, b: 0});
+  S.orders.forEach(o => { if (!all && o.status === 'Cancelled') return; const k = keyFn(o); if (!(k in m)) return; const c = calc(o); m[k].n++; m[k].p += c.qty; m[k].v += c.total || 0; m[k].pd += c.paid; m[k].b += c.bal || 0; });
+  return m;
+}
+function tbl(title, m, cols = ['n','p','v']) {
+  const H = {n: 'Orders', p: 'Pieces', v: 'Value', pd: 'Paid', b: 'Balance'};
+  const rows = Object.entries(m).filter(([k, x]) => x.n || title !== 'By client').map(([k, x]) => `<tr><td>${esc(k)}</td>${cols.map(c => `<td>${c === 'n' || c === 'p' ? x[c] : rp(x[c])}</td>`).join('')}</tr>`).join('');
+  return `<h2>${title}</h2><div class="card wrap"><table><tr><th></th>${cols.map(c => `<th>${H[c]}</th>`).join('')}</tr>${rows || '<tr><td class="mu">No data</td></tr>'}</table></div>`;
+}
+function vSummary() {
+  const cs = S.orders.filter(o => o.status !== 'Cancelled').map(calc), sum = k => cs.reduce((a, c) => a + (c[k] || 0), 0);
+  const open = S.orders.filter(o => !CLOSED.includes(o.status)).length;
+  const over = S.orders.filter(o => dl(o) === 'red').length;
+  const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const mm = sumBy(o => o.deadline && +o.deadline.slice(0, 4) === +S.year ? mon[+o.deadline.slice(5, 7) - 1] : null, mon);
+  return `<div class="kpi"><div class="mu">Orders<b>${cs.length}</b></div><div class="mu">Pieces<b>${sum('qty')}</b></div><div class="mu">Total sales<b>${rp(sum('total'))}</b></div><div class="mu">Discounts given<b>${rp(sum('disc'))}</b></div><div class="mu">Paid<b>${rp(sum('paid'))}</b></div><div class="mu">Balance due<b>${rp(sum('bal'))}</b></div><div class="mu">Open / overdue<b>${open} / <span class="${over ? 'red' : ''}">${over}</span></b></div></div>
+  ${tbl('By status', sumBy(o => o.status, S.statuses, true))}${tbl('By product', sumBy(o => o.product, S.products))}
+  ${tbl('By client', sumBy(o => o.client, S.clients), ['n','p','v','pd','b'])}
+  <h2>By deadline month <input type="number" style="width:90px;display:inline-block" value="${S.year}" onchange="S.year=+this.value;save();render()"></h2>${tbl('', mm).replace('<h2></h2>', '')}`;
+}
+
+function vSettings() {
+  const L = (id, t, a) => `<label>${t}</label><textarea id="s_${id}">${esc(a.join('\n'))}</textarea>`;
+  return `<div class="card"><p class="mu" style="margin-top:0">One item per line. Changes apply to dropdowns, prices and the summary.</p>
+    <div class="b" style="margin-top:8px">Clients / Brands</div><div id="clients" style="margin-top:6px">${clientRows()}</div><button class="btn g" onclick="editCl(-1)">+ Add client</button>${L('products', 'Products', S.products)}${L('materials', 'Materials', S.materials)}${L('fits', 'Fit', S.fits)}${L('statuses', 'Order statuses (keep Done / Delivered / Cancelled)', S.statuses)}
+    ${L('sizes', 'Sizes and extra price per pc, format: Size | Extra (e.g. 2XL | 5000)', S.sizes.map(z => z.l + ' | ' + z.x))}
+    <div class="b" style="margin-top:8px">Price list</div><div class="mu" style="margin-bottom:8px">Price per piece for each product and material. Open “Options” on a row for bulk pricing and cost.</div><div id="prices">${priceRows()}</div><p class="mu">Choose “Any material” for a default price that applies when no exact material match exists. Price changes save automatically.</p>
+    <button class="btn" style="margin-top:10px" onclick="saveSet()">Save settings</button></div>
+  <div class="card"><div class="b">Backup</div><p class="mu">Your data is stored in this browser only. Copy the backup text somewhere safe; paste it back and press Restore to move to another phone.</p>
+    <textarea id="bk" placeholder="Backup text appears here"></textarea>
+    <div class="row" style="margin-bottom:10px"><button class="btn" onclick="bkFile()">💾 Save backup file</button><button class="btn g" onclick="$('#rf').click()">Restore from file</button></div><input id="rf" type="file" accept=".json" hidden onchange="rsFile(this)">
+    <div class="row" style="margin-bottom:6px"><button class="btn g" onclick="xlExport()">📊 Export to Excel</button><button class="btn g" onclick="$('#xf').click()">Import from Excel</button></div><input id="xf" type="file" accept=".xlsx,.xls" hidden onchange="xlImport(this)">
+    <p class="mu">Last backup file: ${S.lastBackup ? fd(S.lastBackup) : 'never'}. Or copy the backup as text:</p>
+    <div class="row" style="margin-top:8px"><button class="btn g" onclick="bk()">Create backup</button><button class="btn g" onclick="rs()">Restore</button></div></div>`;
+}
+let po = {};
+const prodList = () => { const a = [...S.products]; S.prices.forEach(x => { if (x.p && !a.includes(x.p)) a.push(x.p); }); return a; };
+function priceRows() {
+  const seen = {}, dup = {};
+  S.prices.forEach((x, i) => { const k = x.p + '|' + x.m; if (seen[k]) dup[i] = 1; seen[k] = 1; });
+  const mat = (v, i) => `<select onchange="pr(${i},'m',this.value)">${opts(!v || S.materials.includes(v) ? S.materials : [...S.materials, v], v, true).replace('>–<', '>Any material (default)<')}</select>`;
+  const row = (x, i) => {
+    const mg = x.cost && x.v ? Math.round((x.v - x.cost) / x.v * 100) : null;
+    const info = [mg != null ? mg + '% margin' : '', x.bq && x.bv ? `bulk ${x.bq}+ pcs` : ''].filter(Boolean).join(' · ');
+    const inp = (f, lab) => `<div><label>${lab}</label><input type="number" min="0" inputmode="numeric" value="${x[f] || ''}" onchange="pr(${i},'${f}',this.value)"></div>`;
+    return `<div class="pr">${mat(x.m, i)}<div class="rpw"><span>Rp</span><input type="number" min="0" inputmode="numeric" placeholder="0" value="${x.v || ''}" onchange="pr(${i},'v',this.value)"></div><button class="x" onclick="delP(${i})" aria-label="Delete">✕</button></div>
+      <details class="mu" ${po[i] ? 'open' : ''} ontoggle="po[${i}]=this.open"><summary>Options${info ? ' · ' + info : ''}${dup[i] ? ' · <b class="red">Duplicate</b>' : ''}</summary><div class="g3">${inp('bq', 'Bulk from (pcs)')}${inp('bv', 'Bulk price / pc')}${inp('cost', 'Cost / pc')}</div></details>`;
+  };
+  return prodList().map((p, k) => {
+    const rows = S.prices.map((x, i) => ({x, i})).filter(z => z.x.p === p);
+    return `<div class="card pg"><div class="row sp"><span><span class="b">${esc(p)}</span> <span class="mu">${rows.length} price${rows.length === 1 ? '' : 's'}</span></span><button class="btn g" style="padding:6px 10px" onclick="addP(${k})">+ Material</button></div>${rows.length ? rows.map(z => row(z.x, z.i)).join('') : '<div class="mu" style="margin-top:6px">No prices yet</div>'}</div>`;
+  }).join('');
+}
+function pr(i, f, v) { S.prices[i][f] = f === 'p' || f === 'm' ? v : +v || 0; save(); $('#prices').innerHTML = priceRows(); }
+function addP(k) { S.prices.push({p: prodList()[k], m: '', v: 0}); save(); $('#prices').innerHTML = priceRows(); }
+function delP(i) { if (confirm('Are you sure you want to delete this price?')) { S.prices.splice(i, 1); po = {}; save(); $('#prices').innerHTML = priceRows(); } }
+let pe = -2, pq = '';
+const PTYPES = ['Bank transfer', 'QR code', 'E-wallet', 'Cash', 'Other'];
+function vPay() {
+  const add = pe === -1 ? payForm(-1) : '';
+  const list = S.pay.map((m, i) => pe === i ? payForm(i) : payCard(m, i)).join('');
+  return `<div class="row sp" style="margin-bottom:10px"><div class="mu">Payment methods to share with customers</div><button class="btn" onclick="editPay(-1)">+ Add</button></div>${add}${list || (add ? '' : '<div class="card mu">No payment methods yet. Tap “+ Add” to add a bank account, QR code or e-wallet.</div>')}`;
+}
+function payCard(m, i) {
+  return `<div class="card"><div class="row sp"><span class="b">${esc(m.name || m.type)}</span><span class="tag">${esc(m.type)}</span></div>
+    ${m.holder ? `<div class="mu">Account name</div><div>${esc(m.holder)}</div>` : ''}
+    ${m.acc ? `<div class="mu" style="margin-top:6px">Account / phone number</div><div class="b" style="font-size:17px;letter-spacing:.5px">${esc(m.acc)}</div>` : ''}
+    ${m.notes ? `<div class="mu" style="margin-top:6px">${esc(m.notes)}</div>` : ''}
+    ${m.qr ? `<img class="qr" src="${m.qr}" alt="QR code">` : ''}
+    <div class="row" style="margin-top:10px">${m.acc ? `<button class="btn g" onclick="copyT(S.pay[${i}].acc)">Copy number</button>` : ''}<button class="btn g" onclick="copyD(${i})">Copy details</button><button class="btn g" onclick="editPay(${i})">Edit</button></div></div>`;
+}
+function payForm(i) {
+  const m = i < 0 ? {type: PTYPES[0]} : S.pay[i];
+  const F = (id, lab, v) => `<label>${lab}</label><input id="${id}" value="${esc(v || '')}">`;
+  return `<div class="card"><div class="b">${i < 0 ? 'New payment method' : 'Edit payment method'}</div>
+    <label>Type</label><select id="p_type">${opts(PTYPES, m.type)}</select>
+    ${F('p_name', 'Bank / provider name (e.g. BCA, GoPay)', m.name)}${F('p_holder', 'Account holder name', m.holder)}${F('p_acc', 'Account / phone number', m.acc)}${F('p_notes', 'Notes (e.g. payment instructions)', m.notes)}
+    <label>QR code image</label><div class="row"><img id="pqimg" class="qr" style="margin:0;width:110px;display:${pq ? 'block' : 'none'}" src="${pq}"><button type="button" class="btn g" onclick="$('#pqf').click()">🖼 Upload QR</button><button type="button" class="btn g" onclick="$('#pqc').click()">📷 Take photo</button><button type="button" class="btn d" onclick="pq='';pqShow()">Remove</button></div>
+    <input id="pqf" type="file" accept="image/*" hidden onchange="pqPick(this)"><input id="pqc" type="file" accept="image/*" capture="environment" hidden onchange="pqPick(this)">
+    <div class="row" style="margin-top:12px"><button class="btn" onclick="savePay(${i})">Save</button><button class="btn g" onclick="pe=-2;render()">Cancel</button>${i >= 0 ? `<button class="btn d" onclick="delPay(${i})">Delete</button>` : ''}</div></div>`;
+}
+function editPay(i) { pe = i; pq = i >= 0 ? S.pay[i].qr || '' : ''; render(); }
+function pqShow() { const im = $('#pqimg'); im.src = pq; im.style.display = pq ? 'block' : 'none'; }
+function pqPick(el) {
+  const f = el.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const s = Math.min(1, 800 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = im.width * s; c.height = im.height * s;
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      pq = c.toDataURL('image/jpeg', .85); pqShow();
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(f); el.value = '';
+}
+function savePay(i) {
+  const g = id => $('#' + id).value.trim();
+  const m = {type: g('p_type'), name: g('p_name'), holder: g('p_holder'), acc: g('p_acc'), notes: g('p_notes'), qr: pq};
+  if (!m.name && !m.acc && !m.qr) { alert('Add at least a name, number or QR code.'); return; }
+  i < 0 ? S.pay.push(m) : (S.pay[i] = m);
+  if (!save()) alert('Storage is full. Remove some photos and save again.');
+  pe = -2; render();
+}
+function delPay(i) { if (confirm('Are you sure you want to delete this payment method?')) { S.pay.splice(i, 1); save(); pe = -2; render(); } }
+function copyT(t) { try { navigator.clipboard.writeText(t).then(() => alert('Copied.'), () => prompt('Copy this:', t)); } catch (e) { prompt('Copy this:', t); } }
+function copyD(i) { const m = S.pay[i]; copyT([m.name || m.type, m.holder && 'Name: ' + m.holder, m.acc && 'No: ' + m.acc, m.notes].filter(Boolean).join('\n')); }
+function payMsg(wa) {
+  const o = read(), c = calc(o);
+  if (c.total == null) { alert('Choose a product and quantity (and a price) first.'); return; }
+  const L = [`Hi ${o.client || 'there'}, here is the payment info for your order:`, '', `${o.product}${o.material ? ' · ' + o.material : ''} – ${c.qty} pcs`, `Total: ${rp(c.total)}${c.dp ? ` (after ${c.dp}% discount)` : ''}`];
+  if (c.paid) L.push(`Paid: ${rp(c.paid)}`);
+  L.push(c.bal > 0 ? `Balance due: ${rp(c.bal)}` : 'Fully paid – thank you!');
+  if (c.bal > 0) {
+    L.push('', 'Payment methods:');
+    if (!S.pay.length) L.push('(add your bank details in the Payments tab)');
+    S.pay.forEach(m => L.push('• ' + [m.name || m.type, m.holder, m.acc].filter(Boolean).join(' – ') + (m.notes ? ` (${m.notes})` : '')));
+    if (S.pay.some(m => m.qr)) L.push('QR code image will be sent separately.');
+    L.push('', 'Thank you!');
+  }
+  const msg = L.join('\n');
+  const tel = ((S.cd[o.client] || {}).phone || '').replace(/\D/g, '').replace(/^0/, '62');
+  if (wa) window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(msg), '_blank'); else copyT(msg);
+}
+function shrink(el, max, q, cb) {
+  const f = el.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const s = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = im.width * s; c.height = im.height * s;
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      cb(c.toDataURL('image/jpeg', q));
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(f); el.value = '';
+}
+let cp = '', sp = '', sf = '';
+const av = (n, s) => { const c = S.cd[n] || {}; return c.photo ? `<img class="av" style="width:${s}px;height:${s}px" src="${c.photo}">` : `<span class="av" style="width:${s}px;height:${s}px;font-size:${Math.round(s * .45)}px">${esc((n || '?').charAt(0).toUpperCase())}</span>`; };
+function clientRows() {
+  if (!S.clients.length) return '<div class="mu" style="margin-bottom:8px">No clients yet.</div>';
+  return S.clients.map((n, i) => {
+    const c = S.cd[n] || {}, k = S.orders.filter(o => o.client === n).length;
+    return `<div class="card row" style="flex-wrap:nowrap;padding:8px;cursor:pointer" onclick="editCl(${i})">${av(n, 44)}<div style="min-width:0;flex:1"><div class="b">${esc(n)}</div><div class="mu">${esc([c.phone, c.email].filter(Boolean).join(' · ') || 'No contact details')} · ${k} order${k === 1 ? '' : 's'}</div></div><span class="mu">Edit</span></div>`;
+  }).join('');
+}
+function cpShow() {
+  $('#cpv').innerHTML = cp ? `<img class="av" style="width:72px;height:72px" src="${cp}">` : `<span class="av" style="width:72px;height:72px;font-size:32px">${esc(($('#c_name').value || '?').charAt(0).toUpperCase())}</span>`;
+}
+function editCl(i) {
+  const n = i < 0 ? '' : S.clients[i], c = S.cd[n] || {}; cp = c.photo || '';
+  const F = (id, lab, v, t = 'text') => `<label>${lab}</label><input id="${id}" type="${t}" value="${esc(v || '')}">`;
+  $('#modal').innerHTML = `<div class="card"><div class="row sp"><span class="b">${i < 0 ? 'New client' : 'Edit client'}</span><button class="btn g" onclick="closeM()">Close</button></div>
+    <label>Photo / logo</label><div class="row"><span id="cpv"></span><button type="button" class="btn g" onclick="$('#cpu').click()">🖼 Upload</button><button type="button" class="btn g" onclick="$('#cpc').click()">📷 Take photo</button><button type="button" class="btn d" onclick="cp='';cpShow()">Remove</button></div>
+    <input id="cpu" type="file" accept="image/*" hidden onchange="shrink(this,240,.8,d=>{cp=d;cpShow()})"><input id="cpc" type="file" accept="image/*" capture="user" hidden onchange="shrink(this,240,.8,d=>{cp=d;cpShow()})">
+    ${F('c_name', 'Client / brand name', n)}${F('c_phone', 'Phone / WhatsApp (with country code)', c.phone, 'tel')}${F('c_email', 'Email', c.email, 'email')}${F('c_notes', 'Address / notes', c.notes)}
+    ${hist(n)}<div class="row" style="margin-top:12px"><button class="btn" onclick="saveCl(${i})">Save</button>${i >= 0 ? `<button class="btn d" onclick="delCl(${i})">Delete</button>` : ''}</div></div>`;
+  $('#modal').classList.add('on'); cpShow();
+}
+function saveCl(i) {
+  const g = id => $('#' + id).value.trim(), name = g('c_name');
+  if (!name) { alert('Please enter a client name.'); return; }
+  if (S.clients.some((x, k) => x === name && k !== i)) { alert('A client with this name already exists.'); return; }
+  const old = i < 0 ? '' : S.clients[i];
+  if (i < 0) S.clients.push(name);
+  else { S.clients[i] = name; if (old !== name) { S.orders.forEach(o => { if (o.client === old) o.client = name; }); delete S.cd[old]; } }
+  S.cd[name] = {phone: g('c_phone'), email: g('c_email'), notes: g('c_notes'), photo: cp};
+  if (!save()) alert('Storage is full. Remove some photos and save again.');
+  closeM(); $('#clients').innerHTML = clientRows();
+}
+function delCl(i) {
+  const n = S.clients[i];
+  if (confirm('Are you sure you want to delete client “' + n + '”? Their past orders keep the name.')) { S.clients.splice(i, 1); delete S.cd[n]; save(); closeM(); $('#clients').innerHTML = clientRows(); }
+}
+function vSamples() {
+  const L = S.samples.map((x, i) => ({x, i})).filter(z => !sf || z.x.product === sf);
+  const top = `<div class="row" style="margin-bottom:10px"><button class="btn" onclick="editSm(-1)">+ Add sample</button><select style="width:auto;flex:1" onchange="sf=this.value;render()">${opts(S.products, sf, true).replace('>–<', '>All products<')}</select></div>`;
+  if (!L.length) return top + '<div class="card mu">No samples yet. Tap “+ Add sample” to save a product photo with its material and notes.</div>';
+  return top + `<div class="gal">${L.map(({x, i}) => `<div class="card" style="padding:6px;cursor:pointer" onclick="editSm(${i})">${x.photo ? `<img class="gi" src="${x.photo}">` : '<div class="gi mu">No photo</div>'}<div class="b" style="margin-top:6px">${esc(x.title || x.product || 'Sample')}</div><div class="mu">${esc([x.product, x.material].filter(Boolean).join(' · '))}</div></div>`).join('')}</div>`;
+}
+function smShow() { const im = $('#spimg'); im.src = sp; im.style.display = sp ? 'block' : 'none'; }
+function editSm(i) {
+  const x = i < 0 ? {} : S.samples[i]; sp = x.photo || '';
+  $('#modal').innerHTML = `<div class="card"><div class="row sp"><span class="b">${i < 0 ? 'New sample' : 'Edit sample'}</span><button class="btn g" onclick="closeM()">Close</button></div>
+    <label>Photo</label><img id="spimg" class="qr" style="max-width:100%;background:none;display:${sp ? 'block' : 'none'}" src="${sp}">
+    <div class="row" style="margin-top:8px"><button type="button" class="btn g" onclick="$('#smc').click()">📷 Take photo</button><button type="button" class="btn g" onclick="$('#smu').click()">🖼 Upload</button><button type="button" class="btn d" onclick="sp='';smShow()">Remove</button></div>
+    <input id="smc" type="file" accept="image/*" capture="environment" hidden onchange="shrink(this,720,.7,d=>{sp=d;smShow()})"><input id="smu" type="file" accept="image/*" hidden onchange="shrink(this,720,.7,d=>{sp=d;smShow()})">
+    <label>Title</label><input id="m_title" value="${esc(x.title || '')}">
+    <div class="g2"><div><label>Product</label><select id="m_product">${opts(S.products, x.product, true)}</select></div><div><label>Material</label><select id="m_material">${opts(S.materials, x.material, true)}</select></div></div>
+    <label>Notes</label><input id="m_notes" value="${esc(x.notes || '')}">
+    <div class="row" style="margin-top:12px"><button class="btn" onclick="saveSm(${i})">Save</button>${i >= 0 ? `<button class="btn d" onclick="delSm(${i})">Delete</button>` : ''}</div></div>`;
+  $('#modal').classList.add('on');
+}
+function saveSm(i) {
+  const g = id => $('#' + id).value.trim();
+  const m = {title: g('m_title'), product: g('m_product'), material: g('m_material'), notes: g('m_notes'), photo: sp};
+  if (!m.photo && !m.title) { alert('Add a photo or a title.'); return; }
+  i < 0 ? S.samples.push(m) : (S.samples[i] = m);
+  if (!save()) alert('Storage is full. Remove some photos and save again.');
+  closeM(); render();
+}
+function delSm(i) { if (confirm('Are you sure you want to delete this sample?')) { S.samples.splice(i, 1); save(); closeM(); render(); } }
+let pys = [];
+const dd = o => o.deadline ? Math.round((new Date(o.deadline + 'T00:00:00') - new Date().setHours(0, 0, 0, 0)) / 864e5) : null;
+const fq = x => !qf || (qf === 'over' && dl(x.o) === 'red') || (qf === 'unpaid' && x.o.status !== 'Cancelled' && x.c.bal > 0) || (qf === 'week' && !CLOSED.includes(x.o.status) && dd(x.o) !== null && dd(x.o) >= 0 && dd(x.o) <= 7);
+function pyHtml() {
+  const ms = ['Cash', ...S.pay.map(m => m.name || m.type)];
+  return pys.map((p, k) => `<div class="pr" style="grid-template-columns:1fr 1fr 36px"><input type="date" value="${p.d || ''}" onchange="pys[${k}].d=this.value"><input type="number" inputmode="numeric" placeholder="Amount" value="${p.a || ''}" oninput="pys[${k}].a=+this.value||0"><button type="button" class="x" onclick="pys.splice(${k},1);pyRe()">✕</button></div><select style="margin-top:4px" onchange="pys[${k}].m=this.value">${opts(ms, p.m, true).replace('>–<', '>Method<')}</select>`).join('') || '<div class="mu">No payments yet.</div>';
+}
+function pyRe() { $('#pyl').innerHTML = pyHtml(); pv(); }
+function hist(n) {
+  if (!n) return '';
+  const L = S.orders.map((o, k) => ({o, k, c: calc(o)})).filter(z => z.o.client === n);
+  if (!L.length) return '<div class="mu" style="margin-top:10px">No orders yet.</div>';
+  const a = L.filter(z => z.o.status !== 'Cancelled'), owed = a.reduce((s, z) => s + (z.c.bal || 0), 0), tot = a.reduce((s, z) => s + (z.c.total || 0), 0);
+  return `<h2>Order history</h2><div class="kpi"><div class="mu">Orders<b>${a.length}</b></div><div class="mu">Total sales<b>${rp(tot)}</b></div><div class="mu">Owes you<b class="${owed > 0 ? 'red' : 'grn'}">${rp(owed)}</b></div></div>` + L.map(z => `<div class="card" style="padding:8px;cursor:pointer" onclick="closeM();go('orders');edit(${z.k})"><div class="row sp"><b>${esc(z.o.product)}</b><span class="tag">${esc(z.o.status)}</span></div><div class="mu">${fd(z.o.deadline)} · ${rp(z.c.total)} · Balance ${rp(z.c.bal)}</div></div>`).join('');
+}
+function backupNag() {
+  const old = !S.lastBackup || (new Date(today()) - new Date(S.lastBackup)) / 864e5 >= 7;
+  return S.orders.length && old ? `<div class="card" onclick="go('settings')" style="cursor:pointer"><b>💾 Time to back up</b> <span class="mu">– ${S.lastBackup ? 'last backup ' + fd(S.lastBackup) : 'no backup file yet'}. Tap to save one.</span></div>` : '';
+}
+async function saveFile(name, data) {
+  const C = window.Capacitor;
+  if (C && C.isNativePlatform && C.isNativePlatform()) {
+    try {
+      let b64;
+      if (typeof data === 'string') b64 = btoa(unescape(encodeURIComponent(data)));
+      else {
+        const u = new Uint8Array(data instanceof ArrayBuffer ? data : data.buffer); let s = '';
+        for (let k = 0; k < u.length; k += 8192) s += String.fromCharCode.apply(null, u.subarray(k, k + 8192));
+        b64 = btoa(s);
+      }
+      const f = await C.Plugins.Filesystem.writeFile({path: name, data: b64, directory: 'CACHE'});
+      await C.Plugins.Share.share({title: name, url: f.uri, dialogTitle: 'Save or send file'});
+      return true;
+    } catch (e) { if (!/cancel/i.test(String(e && e.message || e))) alert('Could not save the file.'); return false; }
+  }
+  const d = window.claude && claude.use ? await claude.use('downloads') : null;
+  if (d) { try { await d.save({filename: name, data}); return true; } catch (e) { return false; } }
+  try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data])); a.download = name; a.click(); return true; } catch (e) { alert('Saving files is not available here.'); return false; }
+}
+async function bkFile() { if (await saveFile('tapak-karya-backup-' + today() + '.json', JSON.stringify(S))) { S.lastBackup = today(); save(); render(); } }
+function rsFile(el) {
+  const f = el.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result); if (!d.orders || !d.sizes) throw 0;
+      if (!confirm('Replace all current data with this backup?')) return;
+      S = d; S.pay = S.pay || []; S.samples = S.samples || []; S.cd = S.cd || {}; S.rem = S.rem || {on: false, days: 3, notified: {}};
+      save(); render(); alert('Restored.');
+    } catch (e) { alert('That file is not a valid backup.'); }
+  };
+  r.readAsText(f); el.value = '';
+}
+async function xlExport() {
+  if (!window.XLSX) { alert('The Excel library did not load.'); return; }
+  const rows = S.orders.map(o => {
+    const c = calc(o), r = {Client: o.client, Product: o.product, Material: o.material, Fit: o.fit};
+    S.sizes.forEach(z => r[z.l] = (o.q && o.q[z.l]) || ''); r.Other = o.other || '';
+    return Object.assign(r, {Qty: c.qty, 'Price/pc': c.price ?? '', 'Discount %': c.dp || '', Total: c.total ?? '', Paid: c.paid, Balance: c.bal ?? '', 'Order date': o.date || '', Deadline: o.deadline || '', Status: o.status, Notes: o.notes || ''});
+  });
+  const pays = []; S.orders.forEach(o => (o.pays || []).forEach(p => pays.push({Client: o.client, Product: o.product, Date: p.d, Amount: p.a, Method: p.m})));
+  const cls = S.clients.map(n => ({Client: n, Phone: (S.cd[n] || {}).phone || '', Email: (S.cd[n] || {}).email || '', Notes: (S.cd[n] || {}).notes || ''}));
+  const wb = XLSX.utils.book_new();
+  [['Orders', rows], ['Payments', pays], ['Clients', cls]].forEach(([n, a]) => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(a), n));
+  await saveFile('Tapak-Karya-Orders-' + today() + '.xlsx', XLSX.write(wb, {type: 'array', bookType: 'xlsx'}));
+}
+function xlImport(el) {
+  const f = el.files[0]; if (!f || !window.XLSX) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const wb = XLSX.read(r.result, {type: 'array', cellDates: true});
+      const ws = wb.Sheets.Orders || wb.Sheets[wb.SheetNames.find(n => /order/i.test(n))] || wb.Sheets[wb.SheetNames[0]];
+      const a = XLSX.utils.sheet_to_json(ws, {header: 1, raw: true, defval: ''});
+      const hi = a.findIndex(row => row.some(c => /client|brand/i.test(c)) && row.some(c => /product/i.test(c)));
+      if (hi < 0) throw 0;
+      const H = a[hi].map(c => String(c).trim().toLowerCase());
+      const col = (...n) => H.findIndex(h => n.some(x => h === x || h.startsWith(x)));
+      const ci = {client: col('client', 'brand'), product: col('product'), material: col('material'), fit: col('fit'), other: col('other'), date: col('order date', 'date'), deadline: col('deadline', 'due'), status: col('status'), notes: col('notes'), paid: col('paid', 'dp', 'deposit')};
+      const sz = S.sizes.map(z => H.indexOf(String(z.l).toLowerCase()));
+      const dt = v => { if (v instanceof Date) { v = new Date(+v + 432e5); return v.getFullYear() + '-' + String(v.getMonth() + 1).padStart(2, '0') + '-' + String(v.getDate()).padStart(2, '0'); } return /^\d{4}-\d{2}-\d{2}/.test(String(v)) ? String(v).slice(0, 10) : ''; };
+      const add = [];
+      a.slice(hi + 1).forEach(row => {
+        const g = k => ci[k] < 0 ? '' : row[ci[k]], s = k => String(g(k)).trim();
+        if (!s('client') && !s('product')) return;
+        const q = {}; S.sizes.forEach((z, k) => { const v = sz[k] < 0 ? 0 : +row[sz[k]]; if (v) q[z.l] = v; });
+        add.push({id: uid(), client: s('client'), product: s('product'), material: s('material'), fit: s('fit'), q, other: +g('other') || 0, custom: '', disc: '', paid: +g('paid') || 0, date: dt(g('date')), deadline: dt(g('deadline')), status: s('status') || S.statuses[0], notes: s('notes'), photo: '', follow: ''});
+      });
+      if (!add.length) { alert('No orders found in that file.'); return; }
+      if (!confirm('Import ' + add.length + ' orders from this file?')) return;
+      add.forEach(o => { S.orders.push(o); [['clients', 'client'], ['products', 'product'], ['materials', 'material'], ['fits', 'fit'], ['statuses', 'status']].forEach(([l, k]) => { if (o[k] && !S[l].includes(o[k])) S[l].push(o[k]); }); });
+      save(); render(); alert('Imported ' + add.length + ' orders.');
+    } catch (e) { alert('Could not read that Excel file.'); }
+  };
+  r.readAsArrayBuffer(f); el.value = '';
+}
+async function invoice(i) {
+  const o = read(), c = calc(o);
+  if (c.total == null) { alert('Choose a product and quantity first.'); return; }
+  if (!window.jspdf) { alert('The PDF library did not load.'); return; }
+  const d = new window.jspdf.jsPDF(), cl = S.cd[o.client] || {}; let y = 20;
+  const T = (s, x, sz, b, al) => { d.setFontSize(sz); d.setFont('helvetica', b ? 'bold' : 'normal'); d.text(String(s), x, y, al ? {align: al} : undefined); };
+  const L = (s, sz = 11, b) => { T(s, 15, sz, b); y += sz > 12 ? 9 : 6.5; };
+  const R = (l, v, b) => { T(l, 120, 11, b); T(v, 195, 11, b, 'right'); y += 6.5; };
+  L('INVOICE', 22, 1); L('Tapak Karya', 12, 1);
+  L('INV-' + ((S.orders[i] || {}).id || 'NEW').slice(0, 6).toUpperCase() + '   -   ' + fd(today()), 10); y += 4;
+  L('Bill to', 10); L(o.client, 12, 1);
+  [cl.phone, cl.email, cl.notes].filter(Boolean).forEach(t => L(t, 10)); y += 4;
+  L([o.product, o.material, o.fit].filter(Boolean).join(' - '), 11, 1);
+  const sz = S.sizes.filter(z => +(o.q && o.q[z.l])).map(z => z.l + 'x' + o.q[z.l]).join('  ') + (o.other ? '  Other x' + o.other : '');
+  if (sz) L(sz, 10);
+  y += 3; R(c.qty + ' pcs x ' + rp(c.price), rp(c.sub));
+  if (c.disc) R('Discount (' + c.dp + '%)', '- ' + rp(c.disc));
+  R('Total', rp(c.total), 1);
+  (o.pays || []).forEach(p => R('Paid ' + fd(p.d) + (p.m ? ' (' + p.m + ')' : ''), rp(p.a)));
+  R('Balance due', rp(c.bal), 1);
+  if (c.bal > 0 && S.pay.length) {
+    y += 6; L('Payment methods', 12, 1);
+    S.pay.forEach(m => L([m.name || m.type, m.holder, m.acc].filter(Boolean).join(' - ') + (m.notes ? ' (' + m.notes + ')' : ''), 10));
+    let x = 15; S.pay.filter(m => m.qr).slice(0, 3).forEach(m => { if (y > 210) { d.addPage(); y = 20; } try { d.addImage(m.qr, 'JPEG', x, y, 40, 40); } catch (e) {} x += 45; });
+  }
+  await saveFile('Invoice-' + (o.client || 'order').replace(/\W+/g, '_') + '-' + today() + '.pdf', d.output('arraybuffer'));
+}
+function lines(id) { return $('#s_' + id).value.split('\n').map(s => s.trim()).filter(Boolean); }
+function saveSet() {
+  const gone = k => S[k].filter(x => !lines(k).includes(x)), gp = gone('products'), gm = gone('materials');
+  const hit = x => gp.includes(x.p) || gm.includes(x.m), used = S.prices.filter(hit);
+  let rm = false;
+  if (gp.length || gm.length) {
+    if (!confirm('Are you sure you want to delete: ' + [...gp, ...gm].join(', ') + '?\n\n(Past orders keep their names.)')) return;
+    if (used.length) rm = confirm(used.length + ' price row(s) use ' + (used.length === 1 ? 'it' : 'them') + '. Also remove from the Price list?\n\nOK = remove them\nCancel = keep them (choose this if you only renamed something)');
+  }
+  ['products','materials','fits','statuses'].forEach(k => S[k] = lines(k));
+  if (rm) { S.prices = S.prices.filter(x => !hit(x)); po = {}; }
+  S.sizes = lines('sizes').map(s => { const [l, x] = s.split('|').map(t => t.trim()); return {l, x: +x || 0}; });
+  
+  save(); render(); alert('Saved.');
+}
+function bk() {
+  const t = $('#bk'); t.value = JSON.stringify(S); t.select();
+  try { navigator.clipboard.writeText(t.value); } catch (e) {}
+}
+function rs() {
+  try { const d = JSON.parse($('#bk').value); if (!d.orders || !d.sizes) throw 0; S = d; save(); render(); alert('Restored.'); }
+  catch (e) { alert('That backup text is not valid.'); }
+}
+function phShow() { const im = $('#phimg'); im.src = ph; im.style.display = ph ? 'block' : 'none'; }
+function pick(el) {
+  const f = el.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const s = Math.min(1, 640 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = im.width * s; c.height = im.height * s;
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      ph = c.toDataURL('image/jpeg', .65); phShow();
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(f); el.value = '';
+}
+function dueItems() {
+  const t = new Date().setHours(0, 0, 0, 0), out = [];
+  S.orders.forEach((o, i) => {
+    if (CLOSED.includes(o.status)) return;
+    const dd = o.deadline ? Math.round((new Date(o.deadline + 'T00:00:00') - t) / 864e5) : null;
+    if (dd !== null && dd <= S.rem.days) out.push({i, o, k: 'd', lvl: dd < 0 ? 'red' : 'amb', msg: dd < 0 ? `Overdue by ${-dd} day(s)` : dd === 0 ? 'Due today' : `Due in ${dd} day(s)`});
+    const fu = o.follow ? Math.round((new Date(o.follow + 'T00:00:00') - t) / 864e5) : null;
+    if (fu !== null && fu <= 0) out.push({i, o, k: 'f', lvl: 'amb', msg: fu === 0 ? 'Follow up today' : `Follow-up overdue by ${-fu} day(s)`});
+  });
+  return out;
+}
+function banner() {
+  const n = dueItems().length;
+  return n ? `<div class="card amb" onclick="go('remind')" style="cursor:pointer"><b>🔔 ${n} order reminder${n > 1 ? 's' : ''}</b> <span class="mu">– tap to view</span></div>` : '';
+}
+function vRemind() {
+  const ok = 'Notification' in window, p = ok ? Notification.permission : 'not supported';
+  const items = dueItems();
+  return `<div class="card"><div class="b">Reminder settings</div>
+    <label>Remind me when a deadline is within (days)</label><input type="number" min="0" value="${S.rem.days}" onchange="S.rem.days=Math.max(0,+this.value||0);save();render()">
+    <p class="mu">This also sets when deadlines turn amber. Overdue orders always show. Set a follow-up date inside each order for extra reminders.</p>
+    <div class="row"><button class="btn" onclick="enableN()">${S.rem.on && p === 'granted' ? 'Notifications on ✓' : 'Turn on notifications'}</button>${S.rem.on ? '<button class="btn g" onclick="S.rem.on=false;save();render()">Turn off</button>' : ''}<button class="btn g" onclick="testN()">Send test</button></div>
+    <p class="mu">Permission: ${p}. Phone browsers only show notifications while this page is open or recently open. For alerts when the app is closed, open an order and tap “Add to calendar”.</p></div>
+    <h2>Needs attention (${items.length})</h2>` + (items.length ? items.map(x => `<div class="card" onclick="edit(${x.i})"><div class="row sp"><span class="b">${esc(x.o.client)} · ${esc(x.o.product)}</span><span class="tag ${x.lvl}">${x.msg}</span></div><div class="mu">Deadline ${fd(x.o.deadline)}${x.o.follow ? ' · Follow-up ' + fd(x.o.follow) : ''}</div></div>`).join('') : '<div class="card mu">Nothing urgent right now.</div>');
+}
+function enableN() {
+  if (!('Notification' in window)) { alert('This browser does not support notifications. Reminders still show inside the app.'); return; }
+  Notification.requestPermission().then(p => { S.rem.on = p === 'granted'; save(); render(); notify(); });
+}
+function testN() {
+  try { new Notification('Tapak Karya', {body: 'Test reminder – notifications work.'}); } catch (e) { alert('Test reminder – the browser blocked system notifications, so reminders will show inside the app.'); }
+}
+function notify() {
+  if (!S.rem.on || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const d = today(); let ch = false; S.rem.notified = S.rem.notified || {};
+  dueItems().forEach(x => {
+    const k = x.o.id + x.k; if (S.rem.notified[k] === d) return;
+    try { new Notification('Tapak Karya: ' + (x.o.client || 'Order'), {body: x.o.product + ' – ' + x.msg}); S.rem.notified[k] = d; ch = true; } catch (e) {}
+  });
+  if (ch) save();
+}
+function cal(i, k) {
+  const o = S.orders[i], f = k === 'f', dt = f ? o.follow : o.deadline;
+  if (!dt) { alert('Set the ' + (f ? 'follow-up' : 'deadline') + ' date first, then save the order.'); return; }
+  const s = new Date(dt + 'T00:00:00'), e = new Date(s); e.setDate(e.getDate() + 1);
+  const y = x => x.getFullYear() + String(x.getMonth() + 1).padStart(2, '0') + String(x.getDate()).padStart(2, '0');
+  window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent((f ? 'Follow up: ' : 'Deadline: ') + o.client + ' – ' + o.product) + '&dates=' + y(s) + '/' + y(e) + '&details=' + encodeURIComponent('Follow up on this order'), '_blank');
+}
+render();
+notify();
+setInterval(notify, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) notify(); });
+</script>
+</body>
+</html>
