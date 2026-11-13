@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prep": "mkdir -p www && cp node_modules/xlsx/dist/xlsx.full.min.js www/ && cp node_modules/jspdf/dist/jspdf.umd.min.js www/"
+    "prep": "mkdir -p www && cp index.html www/ && cp node_modules/xlsx/dist/xlsx.full.min.js www/ && cp node_modules/jspdf/dist/jspdf.umd.min.js www/"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
